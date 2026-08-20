@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Executivo de Custos de Viagem - SAD 5ª Região (2026)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="p-6 text-slate-800">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 text-white p-6 rounded-2xl shadow-xl border border-slate-800">
+            <div>
+                <span class="text-xs font-semibold tracking-wider uppercase text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/50">Painel de Gestão</span>
+                <h1 class="text-2xl md:text-3xl font-bold mt-2">Custos de Viagem (2026 - SAD 5ª Região)</h1>
+                <p class="text-slate-400 text-sm mt-1">Acompanhamento executivo de diárias, passagens e PCDPs</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-right">
+                <span class="text-xs text-slate-400">Última Atualização</span>
+                <p class="text-sm font-medium text-slate-200">Exercício 2026</p>
+            </div>
+        </div>
+
+        <!-- KPIs Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Geral de Custos</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpi-total">R$ 143.262,78</h3>
+                </div>
+                <div class="p-3 bg-slate-100 rounded-xl text-slate-700">
+                    <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total de Diárias</p>
+                    <h3 class="text-2xl font-bold text-emerald-600 mt-1" id="kpi-diarias">R$ 59.295,97</h3>
+                    <span class="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full" id="kpi-diarias-pct">41,4% do total</span>
+                </div>
+                <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600">
+                    <i data-lucide="wallet" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total de Passagens</p>
+                    <h3 class="text-2xl font-bold text-sky-600 mt-1" id="kpi-passagens">R$ 83.966,81</h3>
+                    <span class="text-xs text-sky-600 font-medium bg-sky-50 px-2 py-0.5 rounded-full" id="kpi-passagens-pct">58,6% do total</span>
+                </div>
+                <div class="p-3 bg-sky-50 rounded-xl text-sky-600">
+                    <i data-lucide="plane" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total de Viagens</p>
+                    <h3 class="text-2xl font-bold text-indigo-600 mt-1" id="kpi-viagens">57</h3>
+                    <span class="text-xs text-slate-400 font-medium">PCDPs registradas</span>
+                </div>
+                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600">
+                    <i data-lucide="file-text" class="w-6 h-6"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros Interativos -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                    <i data-lucide="filter" class="w-4 h-4 text-slate-500"></i> Filtros de Pesquisa
+                </h2>
+                <button onclick="resetFilters()" class="text-xs text-slate-500 hover:text-slate-800 font-medium underline">Limpar Filtros</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Buscar por Servidor</label>
+                    <input type="text" id="filter-search" placeholder="Digite o nome do servidor..." oninput="applyFilters()" 
+                           class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Motivo da Viagem</label>
+                    <select id="filter-motivo" onchange="applyFilters()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none">
+                        <option value="">Todos os Motivos</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Status da Viagem</label>
+                    <select id="filter-status" onchange="applyFilters()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none">
+                        <option value="">Todos os Status</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Top 10 Servidores -->
+            <div class="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4 text-emerald-600"></i> Top 10 Servidores com Maior Custo
+                </h3>
+                <div class="h-72">
+                    <canvas id="chartTopServidores"></canvas>
+                </div>
+            </div>
+
+            <!-- Custo por Motivo -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <i data-lucide="pie-chart" class="w-4 h-4 text-sky-600"></i> Custo por Motivo
+                </h3>
+                <div class="h-72 flex items-center justify-center">
+                    <canvas id="chartMotivo"></canvas>
+                </div>
+            </div>
+
+            <!-- Evolução Mensal -->
+            <div class="lg:col-span-3 bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <i data-lucide="trending-up" class="w-4 h-4 text-indigo-600"></i> Gastos Mensais ao Longo de 2026
+                </h3>
+                <div class="h-64">
+                    <canvas id="chartMensal"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="table" class="w-4 h-4 text-slate-600"></i> Detalhamento dos Registros
+                </h3>
+                <span class="text-xs text-slate-500" id="table-info">Exibindo 0 registros</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-200">
+                        <tr>
+                            <th class="p-3 cursor-pointer hover:bg-slate-100" onclick="sortTable('servidor')">Servidor ⇕</th>
+                            <th class="p-3">PCDP</th>
+                            <th class="p-3 cursor-pointer hover:bg-slate-100" onclick="sortTable('data')">Data ⇕</th>
+                            <th class="p-3">Motivo</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3 text-right cursor-pointer hover:bg-slate-100" onclick="sortTable('diarias')">Diárias ⇕</th>
+                            <th class="p-3 text-right cursor-pointer hover:bg-slate-100" onclick="sortTable('passagens')">Passagens ⇕</th>
+                            <th class="p-3 text-right cursor-pointer hover:bg-slate-100" onclick="sortTable('total')">Total ⇕</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+                </table>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
+                <button onclick="prevPage()" id="btn-prev" class="px-3 py-1 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-100 disabled:opacity-50">Anterior</button>
+                <span id="page-number" class="font-medium">Página 1</span>
+                <button onclick="nextPage()" id="btn-next" class="px-3 py-1 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-100 disabled:opacity-50">Próxima</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const rawData = [
+          {"servidor": "ALEXANDRA VIEIRA HAZIN", "pcdp": "000329/26", "data": "2026-01-21", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 125.92, "passagens": 0.0},
+          {"servidor": "ALEXANDRA VIEIRA HAZIN", "pcdp": "002015/26", "data": "2026-06-29", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 915.13, "passagens": 847.48},
+          {"servidor": "ANNE ISABELA MENDONCA TAKAKI", "pcdp": "002304/26-1C", "data": "2026-08-11", "motivo": "Nacional - Treinamento", "status": "Planejamento em Aprovação pelo Ordenador de Despesas", "diarias": 1208.28, "passagens": 1064.18},
+          {"servidor": "AUREA MACEDO LOPES", "pcdp": "000465/26", "data": "2026-02-19", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 395.68, "passagens": 0.0},
+          {"servidor": "BRIVALDO DE ABREU VASCONCELOS NETO", "pcdp": "000281/26", "data": "2026-02-23", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 562.12, "passagens": 990.9},
+          {"servidor": "BRIVALDO DE ABREU VASCONCELOS NETO", "pcdp": "000326/26", "data": "2026-02-05", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 562.12, "passagens": 1539.74},
+          {"servidor": "BRIVALDO DE ABREU VASCONCELOS NETO", "pcdp": "002442/26", "data": "2026-08-24", "motivo": "Nacional - A Serviço", "status": "Planejamento em Execução Financeira", "diarias": 910.51, "passagens": 823.68},
+          {"servidor": "CAROL LIMA DE OLIVEIRA CALADO", "pcdp": "001348/26", "data": "2026-05-18", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 1331.6, "passagens": 1255.12},
+          {"servidor": "CAROL LIMA DE OLIVEIRA CALADO", "pcdp": "001624/26", "data": "2026-06-15", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 1736.6, "passagens": 2405.69},
+          {"servidor": "CLOVIS LINS DE ANDRADE", "pcdp": "000282/26", "data": "2026-02-23", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 557.24, "passagens": 990.9},
+          {"servidor": "CLOVIS LINS DE ANDRADE", "pcdp": "001649/26", "data": "2026-05-27", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 487.16, "passagens": 0.0},
+          {"servidor": "CLOVIS LINS DE ANDRADE", "pcdp": "002432/26", "data": "2026-08-11", "motivo": "Nacional - A Serviço", "status": "Aguardando Início da Prestação de Contas", "diarias": 825.74, "passagens": 0.0},
+          {"servidor": "DANYELA WANDERLEY FERREIRA", "pcdp": "000013/26", "data": "2026-03-02", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 2527.95, "passagens": 1859.65},
+          {"servidor": "DANYELA WANDERLEY FERREIRA", "pcdp": "000166/26", "data": "2026-02-09", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 1072.27, "passagens": 3295.45},
+          {"servidor": "DANYELA WANDERLEY FERREIRA", "pcdp": "000206/26", "data": "2026-03-24", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 1778.86, "passagens": 2704.07},
+          {"servidor": "DANYELA WANDERLEY FERREIRA", "pcdp": "000656/26", "data": "2026-06-08", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 2145.45, "passagens": 2684.48},
+          {"servidor": "DANYELA WANDERLEY FERREIRA", "pcdp": "001724/26", "data": "2026-07-05", "motivo": "Nacional - Congresso", "status": "Encerrada - realizada", "diarias": 2032.46, "passagens": 1187.4},
+          {"servidor": "DANYELA WANDERLEY FERREIRA", "pcdp": "001862/26", "data": "2026-06-29", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 1432.46, "passagens": 1385.25},
+          {"servidor": "DANYELA WANDERLEY FERREIRA", "pcdp": "002249/26", "data": "2026-08-03", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 2524.1, "passagens": 2685.8},
+          {"servidor": "DANYELA WANDERLEY FERREIRA", "pcdp": "002314/26", "data": "2026-08-31", "motivo": "Nacional - Encontro/Seminário", "status": "Planejamento em Execução Financeira", "diarias": 1978.28, "passagens": 489.7},
+          {"servidor": "ERICA MILENA CARVALHO GUIMARAES LEONCIO", "pcdp": "001707/26", "data": "2026-07-05", "motivo": "Nacional - Congresso", "status": "Encerrada - realizada", "diarias": 1419.96, "passagens": 1361.23},
+          {"servidor": "FRANCISCO GUILHERME NOBREGA SPINELLI", "pcdp": "000533/26", "data": "2026-02-27", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 136.59, "passagens": 0.0},
+          {"servidor": "FRANCISCO GUILHERME NOBREGA SPINELLI", "pcdp": "000621/26", "data": "2026-03-29", "motivo": "Nacional - Treinamento", "status": "Encerrada - realizada", "diarias": 1591.36, "passagens": 3630.62},
+          {"servidor": "GIGIANE DE ALBUQUERQUE MENDES", "pcdp": "001334/26", "data": "2026-05-18", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 1331.6, "passagens": 1255.12},
+          {"servidor": "GIGIANE DE ALBUQUERQUE MENDES", "pcdp": "001625/26", "data": "2026-06-15", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 1736.6, "passagens": 2090.44},
+          {"servidor": "GIGIANE DE ALBUQUERQUE MENDES", "pcdp": "001708/26", "data": "2026-07-05", "motivo": "Nacional - Congresso", "status": "Encerrada - realizada", "diarias": 1419.96, "passagens": 1187.4},
+          {"servidor": "GUILHERME PEREIRA CORREA SAMY", "pcdp": "002305/26-1C", "data": "2026-08-11", "motivo": "Nacional - Treinamento", "status": "Planejamento em Aprovação pelo Ordenador de Despesas", "diarias": 1680.78, "passagens": 1112.35},
+          {"servidor": "GUTEMBERG ALVES SARAIVA", "pcdp": "000143/26-1C", "data": "2026-01-07", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 673.34, "passagens": 0.0},
+          {"servidor": "HIGO BRAGA DA SILVA", "pcdp": "000205/26-1C", "data": "2026-01-26", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 1442.95, "passagens": 0.0},
+          {"servidor": "HIGO BRAGA DA SILVA", "pcdp": "000534/26", "data": "2026-02-27", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 133.88, "passagens": 0.0},
+          {"servidor": "HIGO BRAGA DA SILVA", "pcdp": "001655/26", "data": "2026-05-27", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 457.76, "passagens": 0.0},
+          {"servidor": "ISNAR DE ALBUQUERQUE LUCAS", "pcdp": "001908/26", "data": "2026-06-15", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 135.82, "passagens": 0.0},
+          {"servidor": "JOSE GOMES JUNIOR", "pcdp": "000015/26", "data": "2026-03-02", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 997.27, "passagens": 1382.49},
+          {"servidor": "JOSE GOMES JUNIOR", "pcdp": "000182/26", "data": "2026-02-09", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 772.27, "passagens": 3295.45},
+          {"servidor": "JOSE GOMES JUNIOR", "pcdp": "000208/26", "data": "2026-03-24", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 1306.36, "passagens": 2704.07},
+          {"servidor": "JOSUE BEZERRA DA SILVA", "pcdp": "002083/26", "data": "2026-05-21", "motivo": "Nacional - A Serviço", "status": "Aguardando Início da Prestação de Contas", "diarias": 138.41, "passagens": 0.0},
+          {"servidor": "JULIANA GUIMARAES REIS", "pcdp": "000580/26", "data": "2026-03-22", "motivo": "Nacional - Congresso", "status": "Encerrada - realizada", "diarias": 1670.45, "passagens": 6736.31},
+          {"servidor": "KATHARINE FELIX PRACA ALVES", "pcdp": "001626/26", "data": "2026-06-15", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 1714.7, "passagens": 2090.44},
+          {"servidor": "LENIRA DE BARROS CORREIA RIBEIRO", "pcdp": "000505/26", "data": "2026-02-26", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 395.68, "passagens": 0.0},
+          {"servidor": "LUCIANO GOMES DE SOUZA", "pcdp": "000016/26", "data": "2026-03-02", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 997.27, "passagens": 1382.49},
+          {"servidor": "LUCIANO GOMES DE SOUZA", "pcdp": "000167/26", "data": "2026-02-09", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 772.27, "passagens": 3295.45},
+          {"servidor": "LUCIANO GOMES DE SOUZA", "pcdp": "000207/26", "data": "2026-03-24", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 1306.36, "passagens": 2704.07},
+          {"servidor": "LUCIANO GOMES DE SOUZA", "pcdp": "002016/26", "data": "2026-06-29", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 882.46, "passagens": 0.0},
+          {"servidor": "LUCIANO GOMES DE SOUZA", "pcdp": "002464/26", "data": "2026-09-10", "motivo": "Nacional - A Serviço", "status": "Planejamento em Execução Financeira", "diarias": 556.64, "passagens": 2512.67},
+          {"servidor": "NATASHA GOMES FERREIRA", "pcdp": "001607/26", "data": "2026-06-23", "motivo": "Nacional - Encontro/Seminário", "status": "Encerrada - realizada", "diarias": 981.82, "passagens": 1428.9},
+          {"servidor": "PATRICIA ANDREA DA SILVA OLIVEIRA", "pcdp": "002465/26", "data": "2026-09-10", "motivo": "Nacional - A Serviço", "status": "Planejamento em Execução Financeira", "diarias": 556.64, "passagens": 2512.67},
+          {"servidor": "PAULO HELIOMAR BARRETO DA SILVA JUNIOR", "pcdp": "000018/26", "data": "2026-01-05", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 904.57, "passagens": 1826.63},
+          {"servidor": "PAULO HELIOMAR BARRETO DA SILVA JUNIOR", "pcdp": "000019/26", "data": "2026-01-21", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 571.38, "passagens": 968.78},
+          {"servidor": "PAULO HELIOMAR BARRETO DA SILVA JUNIOR", "pcdp": "000017/26", "data": "2026-02-09", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 904.57, "passagens": 953.07},
+          {"servidor": "PAULO HELIOMAR BARRETO DA SILVA JUNIOR", "pcdp": "000020/26", "data": "2026-03-02", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 904.57, "passagens": 898.08},
+          {"servidor": "PAULO HELIOMAR BARRETO DA SILVA JUNIOR", "pcdp": "000283/26", "data": "2026-02-23", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 571.38, "passagens": 990.9},
+          {"servidor": "REJANE MARIA DA SILVA", "pcdp": "001709/26", "data": "2026-07-05", "motivo": "Nacional - Congresso", "status": "Encerrada - realizada", "diarias": 1463.31, "passagens": 1392.07},
+          {"servidor": "RODAN PEREIRA DA SILVA JUNIOR", "pcdp": "000581/26", "data": "2026-03-22", "motivo": "Nacional - Congresso", "status": "Encerrada - realizada", "diarias": 1678.25, "passagens": 5247.36},
+          {"servidor": "RODAN PEREIRA DA SILVA JUNIOR", "pcdp": "002518/26", "data": "2026-09-10", "motivo": "Nacional - A Serviço", "status": "Planejamento em Aprovação pelo Ordenador de Despesas", "diarias": 561.3, "passagens": 814.79},
+          {"servidor": "THIAGO ARAUJO CORREIA DE ANDRADE", "pcdp": "000284/26-1C", "data": "2026-02-23", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 231.12, "passagens": 990.9},
+          {"servidor": "THIAGO ARAUJO CORREIA DE ANDRADE", "pcdp": "000699/26", "data": "2026-04-06", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 1072.3, "passagens": 2992.57},
+          {"servidor": "VLADSON CORREIA DA COSTA", "pcdp": "000729/26", "data": "2026-03-20", "motivo": "Nacional - A Serviço", "status": "Encerrada - realizada", "diarias": 114.09, "passagens": 0.0}
+        ].map(item => ({ ...item, total: item.diarias + item.passagens }));
+
+        let filteredData = [...rawData];
+        let currentPage = 1;
+        const pageSize = 10;
+        let currentSort = { field: 'total', asc: false };
+
+        let chartServidores, chartMotivo, chartMensal;
+
+        function formatBRL(val) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function initFilters() {
+            const motivos = [...new Set(rawData.map(d => d.motivo))];
+            const status = [...new Set(rawData.map(d => d.status))];
+
+            const selMotivo = document.getElementById('filter-motivo');
+            motivos.forEach(m => selMotivo.add(new Option(m, m)));
+
+            const selStatus = document.getElementById('filter-status');
+            status.forEach(s => selStatus.add(new Option(s, s)));
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('filter-search').value.toLowerCase();
+            const motivo = document.getElementById('filter-motivo').value;
+            const status = document.getElementById('filter-status').value;
+
+            filteredData = rawData.filter(item => {
+                const matchSearch = item.servidor.toLowerCase().includes(search);
+                const matchMotivo = !motivo || item.motivo === motivo;
+                const matchStatus = !status || item.status === status;
+                return matchSearch && matchMotivo && matchStatus;
+            });
+
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-motivo').value = '';
+            document.getElementById('filter-status').value = '';
+            applyFilters();
+        }
+
+        function updateKPIs() {
+            const total = filteredData.reduce((acc, d) => acc + d.total, 0);
+            const diarias = filteredData.reduce((acc, d) => acc + d.diarias, 0);
+            const passagens = filteredData.reduce((acc, d) => acc + d.passagens, 0);
+            const count = filteredData.length;
+
+            document.getElementById('kpi-total').innerText = formatBRL(total);
+            document.getElementById('kpi-diarias').innerText = formatBRL(diarias);
+            document.getElementById('kpi-passagens').innerText = formatBRL(passagens);
+            document.getElementById('kpi-viagens').innerText = count;
+
+            const pctDiarias = total ? ((diarias / total) * 100).toFixed(1) : 0;
+            const pctPassagens = total ? ((passagens / total) * 100).toFixed(1) : 0;
+
+            document.getElementById('kpi-diarias-pct').innerText = `${pctDiarias}% do total`;
+            document.getElementById('kpi-passagens-pct').innerText = `${pctPassagens}% do total`;
+        }
+
+        function updateCharts() {
+            // Chart 1: Top 10 Servidores
+            const servMap = {};
+            filteredData.forEach(d => {
+                servMap[d.servidor] = (servMap[d.servidor] || 0) + d.total;
+            });
+            const sortedServidores = Object.entries(servMap)
+                .sort((a,b) => b[1] - a[1])
+                .slice(0, 10);
+
+            if (chartServidores) chartServidores.destroy();
+            chartServidores = new Chart(document.getElementById('chartTopServidores'), {
+                type: 'bar',
+                data: {
+                    labels: sortedServidores.map(s => s[0].length > 20 ? s[0].substring(0, 18) + '...' : s[0]),
+                    datasets: [{
+                        label: 'Total Acurado (R$)',
+                        data: sortedServidores.map(s => s[1]),
+                        backgroundColor: '#0f172a',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Chart 2: Pizza / Motivo
+            const motivoMap = {};
+            filteredData.forEach(d => {
+                motivoMap[d.motivo] = (motivoMap[d.motivo] || 0) + d.total;
+            });
+
+            if (chartMotivo) chartMotivo.destroy();
+            chartMotivo = new Chart(document.getElementById('chartMotivo'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(motivoMap),
+                    datasets: [{
+                        data: Object.values(motivoMap),
+                        backgroundColor: ['#0f172a', '#0284c7', '#059669', '#6366f1', '#e11d48']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+                }
+            });
+
+            // Chart 3: Mensal
+            const meses = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+            const mensalMap = meses.reduce((acc, m) => ({...acc, [`2026-${m}`]: 0}), {});
+            filteredData.forEach(d => {
+                const m = d.data.substring(0, 7);
+                if (mensalMap[m] !== undefined) mensalMap[m] += d.total;
+            });
+
+            if (chartMensal) chartMensal.destroy();
+            chartMensal = new Chart(document.getElementById('chartMensal'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [{
+                        label: 'Custo Mensal (R$)',
+                        data: Object.values(mensalMap),
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function sortTable(field) {
+            if (currentSort.field === field) {
+                currentSort.asc = !currentSort.asc;
+            } else {
+                currentSort.field = field;
+                currentSort.asc = true;
+            }
+            updateTable();
+        }
+
+        function updateTable() {
+            filteredData.sort((a, b) => {
+                let valA = a[currentSort.field];
+                let valB = b[currentSort.field];
+                if (typeof valA === 'string') {
+                    return currentSort.asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                }
+                return currentSort.asc ? valA - valB : valB - valA;
+            });
+
+            const start = (currentPage - 1) * pageSize;
+            const paginatedData = filteredData.slice(start, start + pageSize);
+
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            paginatedData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition';
+                tr.innerHTML = `
+                    <td class="p-3 font-medium">${item.servidor}</td>
+                    <td class="p-3 font-mono text-slate-500">${item.pcdp}</td>
+                    <td class="p-3">${item.data}</td>
+                    <td class="p-3">${item.motivo}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-medium ${item.status.includes('Encerrada') ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">${item.status}</span></td>
+                    <td class="p-3 text-right">${formatBRL(item.diarias)}</td>
+                    <td class="p-3 text-right">${formatBRL(item.passagens)}</td>
+                    <td class="p-3 text-right font-bold text-slate-900">${formatBRL(item.total)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('table-info').innerText = `Exibindo ${filteredData.length} registros`;
+            document.getElementById('page-number').innerText = `Página ${currentPage} de ${Math.ceil(filteredData.length / pageSize) || 1}`;
+            document.getElementById('btn-prev').disabled = currentPage === 1;
+            document.getElementById('btn-next').disabled = currentPage >= Math.ceil(filteredData.length / pageSize);
+        }
+
+        function prevPage() {
+            if (currentPage > 1) { currentPage--; updateTable(); }
+        }
+
+        function nextPage() {
+            if (currentPage < Math.ceil(filteredData.length / pageSize)) { currentPage++; updateTable(); }
+        }
+
+        function updateDashboard() {
+            updateKPIs();
+            updateCharts();
+            updateTable();
+        }
+
+        window.onload = () => {
+            lucide.createIcons();
+            initFilters();
+            updateDashboard();
+        };
+    </script>
+</body>
+</html>
