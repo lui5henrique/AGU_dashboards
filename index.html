@@ -85,12 +85,7 @@
                 </h2>
                 <button onclick="resetFilters()" class="text-xs text-slate-500 hover:text-slate-800 font-medium underline">Limpar Filtros</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Buscar por Servidor</label>
-                    <input type="text" id="filter-search" placeholder="Digite o nome do servidor..." oninput="applyFilters()" 
-                           class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none">
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-medium text-slate-600 mb-1">Motivo da Viagem</label>
                     <select id="filter-motivo" onchange="applyFilters()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none">
@@ -107,29 +102,19 @@
         </div>
 
         <!-- Gráficos -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Top 10 Servidores -->
-            <div class="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="users" class="w-4 h-4 text-emerald-600"></i> Top 10 Servidores com Maior Custo
-                </h3>
-                <div class="h-72">
-                    <canvas id="chartTopServidores"></canvas>
-                </div>
-            </div>
-
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Custo por Motivo -->
             <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
                 <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <i data-lucide="pie-chart" class="w-4 h-4 text-sky-600"></i> Custo por Motivo
                 </h3>
-                <div class="h-72 flex items-center justify-center">
+                <div class="h-64 flex items-center justify-center">
                     <canvas id="chartMotivo"></canvas>
                 </div>
             </div>
 
             <!-- Evolução Mensal -->
-            <div class="lg:col-span-3 bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
                 <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <i data-lucide="trending-up" class="w-4 h-4 text-indigo-600"></i> Gastos Mensais ao Longo de 2026
                 </h3>
@@ -239,7 +224,7 @@
         const pageSize = 10;
         let currentSort = { field: 'total', asc: false };
 
-        let chartServidores, chartMotivo, chartMensal;
+        let chartMotivo, chartMensal;
 
         function formatBRL(val) {
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -257,15 +242,13 @@
         }
 
         function applyFilters() {
-            const search = document.getElementById('filter-search').value.toLowerCase();
             const motivo = document.getElementById('filter-motivo').value;
             const status = document.getElementById('filter-status').value;
 
             filteredData = rawData.filter(item => {
-                const matchSearch = item.servidor.toLowerCase().includes(search);
                 const matchMotivo = !motivo || item.motivo === motivo;
                 const matchStatus = !status || item.status === status;
-                return matchSearch && matchMotivo && matchStatus;
+                return matchMotivo && matchStatus;
             });
 
             currentPage = 1;
@@ -273,7 +256,6 @@
         }
 
         function resetFilters() {
-            document.getElementById('filter-search').value = '';
             document.getElementById('filter-motivo').value = '';
             document.getElementById('filter-status').value = '';
             applyFilters();
@@ -298,36 +280,7 @@
         }
 
         function updateCharts() {
-            // Chart 1: Top 10 Servidores
-            const servMap = {};
-            filteredData.forEach(d => {
-                servMap[d.servidor] = (servMap[d.servidor] || 0) + d.total;
-            });
-            const sortedServidores = Object.entries(servMap)
-                .sort((a,b) => b[1] - a[1])
-                .slice(0, 10);
-
-            if (chartServidores) chartServidores.destroy();
-            chartServidores = new Chart(document.getElementById('chartTopServidores'), {
-                type: 'bar',
-                data: {
-                    labels: sortedServidores.map(s => s[0].length > 20 ? s[0].substring(0, 18) + '...' : s[0]),
-                    datasets: [{
-                        label: 'Total Acurado (R$)',
-                        data: sortedServidores.map(s => s[1]),
-                        backgroundColor: '#0f172a',
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            // Chart 2: Pizza / Motivo
+            // Chart 1: Pizza / Motivo
             const motivoMap = {};
             filteredData.forEach(d => {
                 motivoMap[d.motivo] = (motivoMap[d.motivo] || 0) + d.total;
@@ -350,7 +303,7 @@
                 }
             });
 
-            // Chart 3: Mensal
+            // Chart 2: Mensal
             const meses = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             const mensalMap = meses.reduce((acc, m) => ({...acc, [`2026-${m}`]: 0}), {});
             filteredData.forEach(d => {
