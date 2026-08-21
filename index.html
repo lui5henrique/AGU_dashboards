@@ -19,11 +19,14 @@
     <div class="max-w-7xl mx-auto space-y-6">
         
         <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 text-white p-6 rounded-2xl shadow-xl border border-slate-800">
-            <div>
-                <span class="text-xs font-semibold tracking-wider uppercase text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/50">Painel de Gestão</span>
-                <h1 class="text-2xl md:text-3xl font-bold mt-2">Custos de Viagem (2026 - SAD 5ª Região)</h1>
-                <p class="text-slate-400 text-sm mt-1">Acompanhamento executivo de diárias, passagens e PCDPs</p>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-[#0D366C] text-white p-6 rounded-2xl shadow-xl border border-[#26599B]">
+            <div class="flex items-center gap-4">
+                <img src="../AGU_logoOFICIAL.png" alt="Advocacia-Geral da União" class="w-24 h-auto shrink-0 bg-white rounded-[5px] p-2">
+                <div>
+                    <span class="text-xs font-semibold tracking-wider uppercase text-white bg-[#26599B] px-3 py-1 rounded-full border border-white/20">Painel de Gestão</span>
+                    <h1 class="text-2xl md:text-3xl font-bold mt-2">Custos de Viagem (2026 - SAD 5ª Região)</h1>
+                    <p class="text-slate-400 text-sm mt-1">Acompanhamento executivo de diárias, passagens e PCDPs</p>
+                </div>
             </div>
             <div class="mt-4 md:mt-0 text-right">
                 <span class="text-xs text-slate-400">Última Atualização</span>
@@ -33,45 +36,45 @@
 
         <!-- KPIs Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-start justify-between min-h-[118px]">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Geral de Custos</p>
-                    <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpi-total">R$ 143.262,78</h3>
+                    <h3 class="text-2xl font-bold text-[#0D366C] mt-1" id="kpi-total">R$ 143.262,78</h3>
                 </div>
                 <div class="p-3 bg-slate-100 rounded-xl text-slate-700">
                     <i data-lucide="dollar-sign" class="w-6 h-6"></i>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-start justify-between min-h-[118px]">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total de Diárias</p>
-                    <h3 class="text-2xl font-bold text-emerald-600 mt-1" id="kpi-diarias">R$ 59.295,97</h3>
-                    <span class="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full" id="kpi-diarias-pct">41,4% do total</span>
+                    <h3 class="text-2xl font-bold text-[#26599B] mt-1" id="kpi-diarias">R$ 59.295,97</h3>
+                    <span class="text-xs text-[#26599B] font-medium bg-[#26599B]/10 px-2 py-0.5 rounded-full" id="kpi-diarias-pct">41,4% do total</span>
                 </div>
-                <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600">
+                <div class="p-3 bg-[#26599B]/10 rounded-xl text-[#26599B]">
                     <i data-lucide="wallet" class="w-6 h-6"></i>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-start justify-between min-h-[118px]">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total de Passagens</p>
-                    <h3 class="text-2xl font-bold text-sky-600 mt-1" id="kpi-passagens">R$ 83.966,81</h3>
-                    <span class="text-xs text-sky-600 font-medium bg-sky-50 px-2 py-0.5 rounded-full" id="kpi-passagens-pct">58,6% do total</span>
+                    <h3 class="text-2xl font-bold text-[#26599B] mt-1" id="kpi-passagens">R$ 83.966,81</h3>
+                    <span class="text-xs text-[#26599B] font-medium bg-[#26599B]/10 px-2 py-0.5 rounded-full" id="kpi-passagens-pct">58,6% do total</span>
                 </div>
-                <div class="p-3 bg-sky-50 rounded-xl text-sky-600">
+                <div class="p-3 bg-[#26599B]/10 rounded-xl text-[#26599B]">
                     <i data-lucide="plane" class="w-6 h-6"></i>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-start justify-between min-h-[118px]">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total de Viagens</p>
-                    <h3 class="text-2xl font-bold text-indigo-600 mt-1" id="kpi-viagens">57</h3>
+                    <h3 class="text-2xl font-bold text-[#26599B] mt-1" id="kpi-viagens">57</h3>
                     <span class="text-xs text-slate-400 font-medium">PCDPs registradas</span>
                 </div>
-                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600">
+                <div class="p-3 bg-[#26599B]/10 rounded-xl text-[#26599B]">
                     <i data-lucide="file-text" class="w-6 h-6"></i>
                 </div>
             </div>
@@ -106,7 +109,7 @@
             <!-- Custo por Motivo -->
             <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
                 <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="pie-chart" class="w-4 h-4 text-sky-600"></i> Custo por Motivo
+                    <i data-lucide="pie-chart" class="w-4 h-4 text-[#26599B]"></i> Custo por Motivo
                 </h3>
                 <div class="h-64 flex items-center justify-center">
                     <canvas id="chartMotivo"></canvas>
@@ -116,7 +119,7 @@
             <!-- Evolução Mensal -->
             <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
                 <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="trending-up" class="w-4 h-4 text-indigo-600"></i> Gastos Mensais ao Longo de 2026
+                    <i data-lucide="trending-up" class="w-4 h-4 text-[#26599B]"></i> Gastos Mensais ao Longo de 2026
                 </h3>
                 <div class="h-64">
                     <canvas id="chartMensal"></canvas>
@@ -293,7 +296,7 @@
                     labels: Object.keys(motivoMap),
                     datasets: [{
                         data: Object.values(motivoMap),
-                        backgroundColor: ['#0f172a', '#0284c7', '#059669', '#6366f1', '#e11d48']
+                        backgroundColor: ['#0D366C', '#26599B', '#4A7DB8', '#7FA7D6', '#B8CCE3']
                     }]
                 },
                 options: {
@@ -319,8 +322,8 @@
                     datasets: [{
                         label: 'Custo Mensal (R$)',
                         data: Object.values(mensalMap),
-                        borderColor: '#0284c7',
-                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        borderColor: '#26599B',
+                        backgroundColor: 'rgba(38, 89, 155, 0.12)',
                         fill: true,
                         tension: 0.3
                     }]
